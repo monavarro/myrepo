@@ -1,0 +1,88 @@
+#### Exercise 2: Edgar Anderson's Iris Data
+
+In this exercise, you will analyze a well-known `iris` dataset, which you studied in Machine Learning In Business Analytics course. The dataset contains measurements in centimeters of the variables sepal length and width and petal length and width, respectively for each type of iris, namely, setosa, versicolor, and virginica.
+
+__2.a__ Load the dataset `iris` and convert it into `tibble`. How many columns does the dataset have? Name data types of these columns.
+
+In the data set we have 5 columns and with the first 4 being numeric variables, while the last one is a factor variable with 3 levels.
+
+```{r, message=FALSE}
+library(tibble)
+
+data(iris)
+iris <- as.tibble(iris)
+
+str(iris)
+sapply(iris, class)
+
+
+```
+
+__2.b__ Print out only species and its length of a sepal in ascending order. Print out same columns in using descending order of sepal length.
+
+```{r, message = FALSE}
+# In ascending order
+iris %>%
+  select(Species, Sepal.Length) %>%
+  arrange(Sepal.Length)
+
+#In descending order
+iris %>%
+  select(Species, Sepal.Length) %>%
+  arrange(desc(Sepal.Length))
+
+```
+
+__2.c__ Create a new object `iris_species` and assign to it the `iris` tibble grouped by the type of `Species`. How many entries does each `Species` have?
+
+Each `Species` has 50 entries
+
+```{r, message=FALSE}
+
+iris_species <- group_by(iris, Species)
+iris_species %>% 
+  count(Species)
+```
+
+__2.d__ Print out the average sepal's and petal's length and width for each species. What can be noticed?
+
+You can notice that the Virginica specie has the biggest Sepal's, Petal's lenght and Petal's Width on average. The Setosa has the biggest Sepal's Width on average, but at the same time has the smallest Petal's width on average.
+
+```{r, message=FALSE}
+
+iris_species %>%
+  summarise(AvgSepalLen = mean(Sepal.Length, na.rm = TRUE), AvgPetalLen = mean(Petal.Length, na.rm = TRUE), AvgSepalWid = mean(Sepal.Width, na.rm = TRUE), AvgPetalWid = mean(Petal.Width, na.rm = TRUE))
+
+```
+
+__2.e__ Modify `iris_species` by adding a new column of standardized petal's length (i.e., you need to subtract a mean value from each observation and divide by standard deviation). Print the maximum values of this new variable for each species.
+
+```{r, message=FALSE}
+
+iris_species %>% 
+  mutate(standpetallen = (Petal.Length - mean(Petal.Length))/sd(Petal.Length)) %>%
+  summarise(maxstanpetlen = max(standpetallen))
+
+```
+
+__2.f__ Using the original `iris` tibble visualize the relation between petal's length and petal's width by plotting a scatter chart. Bonus: display a (linear) regression line without confidence intervals.
+
+```{r, message = FALSE}
+
+iris %>%
+  ggplot(mapping = aes(x=Petal.Length, y=Petal.Width))+
+  geom_point() +
+  geom_smooth(method='lm', se=FALSE)
+
+```
+
+__2.g__ Modify previous plot by using different colors for each species only for the scatter chart and not for the regression line.
+
+```{r, message = FALSE}
+
+iris %>%
+  ggplot(mapping = aes(x=Petal.Length, y=Petal.Width))+
+  geom_point(mapping = aes(color = Species)) +
+  geom_smooth(method='lm', se=FALSE)
+
+```

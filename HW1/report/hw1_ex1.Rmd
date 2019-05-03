@@ -1,0 +1,18 @@
+#### Exercise 1: Setup
+
+__1.a__ Install the tidyverse and knitr.
+
+```{r, message = FALSE, message=FALSE, warning=FALSE}
+install.packages("tidyverse", repo = "https://cran.r-project.org", quiet = TRUE)
+install.packages("knitr", repo = "https://cran.r-project.org", quiet = TRUE)
+```
+
+__1.b__ Load the `tidyverse`, `knitr`, and set the precision to 2 digits.
+
+```{r, message=FALSE, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(knitr)
+sprintf("%.2f", 2.22222222)
+
+```
