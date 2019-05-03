@@ -53,8 +53,8 @@ house_prices %>%
 __3.e__ Display ten randomly selected observations from the dataset. What happens if you execute your code a few times? How can you make sure that each execution returns the exact 10 rows?
 
 ```{r, message = FALSE}
-
-
+set.seed(45)
+sample_n(house_prices, 10)
 
 ```
 
@@ -62,16 +62,20 @@ __3.f__ Print out the minimum price of observations for which shape is regular (
 
 ```{r, message = FALSE}
 
+house_prices %>%
+  filter(LotShape == "Reg" & KitchenQual == "Ex") %>%
+  summarise(MinPrice = min(SalePrice, na.rm = TRUE))
 
-
-  
 ```
 
 __3.g__ Produce boxplots with kitchen quality as the x-axis and the price as the y-axis. Regroup kitchen quality in the following order: excellent, good, typical/average, and fair. What can you say about the relationship between kitchen quality and the price?
 
 ```{r, message = FALSE}
 
-### your code goes here
+levels(house_prices$KitchenQual)
+
+ggplot(house_prices) +
+  geom_boxplot(mapping = aes(x = KitchenQual, y = SalePrice))
 
 ```
 
