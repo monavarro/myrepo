@@ -1,6 +1,6 @@
 ---
 title: "Homework 1 - Report"
-author: "Name I, First Name I and Name II, First Name II"
+author: "Navarro Calvo, Monica"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---

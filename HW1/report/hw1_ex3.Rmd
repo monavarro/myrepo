@@ -5,29 +5,33 @@ The dataset contains 81 columns describing (almost) every aspect of residential 
 
 __3.a__ Save the [data file](https://raw.githubusercontent.com/tvatter/dsfba_2019/homework/data/house_prices.csv) in `data` folder of your project. Load the dataset into the global environment by using function `read_csv` and assign it to variable `house_prices`. Make sure that the class of `house_prices` is a tibble.
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 house_prices <- read_csv("../data/house_prices.csv")
 house_prices <- as_tibble(house_prices)
-class(house_prices)
+if(is.tibble(house_prices)) "Yes" %>% 
+  kable(align = 'c', col.names = "Is it a tibble?") %>% kable_styling(c("striped","bordered"), full_width = F, position = "center")
 
 ```
 
 __3.b__ You will work with only four variables, namely, `LotArea`, `KitchenQual`, `LotShape`, and `SalePrice`, which indicate area (in square feet), kitchen quality, general shape, and sale price (in dollars) of property. 
 Modify `house_prices` to have only these four columns, as well as transform `LotArea` from square feet into square meters. Bonus: try to use only one `dplyr` function.
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 house_prices <- transmute(house_prices, LotArea = LotArea*0.092903, KitchenQual = KitchenQual, LotShape = LotShape, SalePrice= SalePrice)
-house_prices
+
+house_prices  %>%
+  kable(align = 'c') %>% kable_styling(c("striped","bordered"), full_width = F, position = "center") %>% scroll_box(width = "100%", height = "200px")
 ```
 
 __3.c__ For how many lots have the sale price was greater than its mean value? For 560
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 house_prices %>%
-  count(SalePrice > mean(SalePrice))
+  count(SalePrice > mean(SalePrice))  %>%
+  kable(align = 'c', col.names = c("Is sale price greater than its mean value?", "Count")) %>% kable_styling(c("striped","bordered"), full_width = F, position = "center")
 
 ```
 
@@ -42,48 +46,54 @@ __3.d__ Display the average sale price for each kitchen quality level.
     - Fa -- Fair
     - Po -- Poor
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE}
 house_prices %>%
   group_by(KitchenQual) %>%
   summarise(AveSalePrice = mean(SalePrice)) %>%
-  arrange(AveSalePrice)
+  arrange(AveSalePrice)  %>%
+  kable(align = 'c', col.names = c("Kitchen Quality", "Average Sale Price")) %>% kable_styling(c("striped","bordered"), full_width = F, position = "center")
 
 ```
 
 __3.e__ Display ten randomly selected observations from the dataset. What happens if you execute your code a few times? How can you make sure that each execution returns the exact 10 rows?
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE}
 set.seed(45)
-sample_n(house_prices, 10)
+sample_n(house_prices, 10) %>%
+  kable(align = 'c') %>% kable_styling(c("striped","bordered"), full_width = F, position = "center")
 
 ```
 
 __3.f__ Print out the minimum price of observations for which shape is regular (i.e., `"Reg"`), and the kitchen has excellent quality.
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE}
 
 house_prices %>%
   filter(LotShape == "Reg" & KitchenQual == "Ex") %>%
-  summarise(MinPrice = min(SalePrice, na.rm = TRUE))
+  summarise(MinPrice = min(SalePrice, na.rm = TRUE))  %>%
+  kable(align = 'c', col.names = "Minimum price of house with regular lot sixe and excelent kitchen quality") %>% kable_styling(c("striped","bordered"), full_width = F, position = "center")
 
 ```
 
 __3.g__ Produce boxplots with kitchen quality as the x-axis and the price as the y-axis. Regroup kitchen quality in the following order: excellent, good, typical/average, and fair. What can you say about the relationship between kitchen quality and the price?
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE, fig.align='center'}
 
-levels(house_prices$KitchenQual)
-
-ggplot(house_prices) +
+house_prices %>% 
+  mutate(KitchenQual = fct_relevel(KitchenQual, c("Ex", "Gd", "TA", "Fa"))) %>%
+  arrange(KitchenQual) %>%
+  ggplot() +
   geom_boxplot(mapping = aes(x = KitchenQual, y = SalePrice))
 
 ```
 
 __3.h__ Draw a scatter chart to investigate the dependence between `LotArea` and `SalePrice`. Further, use different colors depending on the kitchen quality, and different shapes depending on the shape of the property. 
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE, fig.align='center'}
 
-### your code goes here
-
+house_prices %>%
+  ggplot(aes(x = LotArea, y = SalePrice, color = KitchenQual, shape = LotShape)) +
+  geom_point()
+?ggplot
 
 ```

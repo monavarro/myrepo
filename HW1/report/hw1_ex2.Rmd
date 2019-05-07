@@ -6,30 +6,34 @@ __2.a__ Load the dataset `iris` and convert it into `tibble`. How many columns d
 
 In the data set we have 5 columns and with the first 4 being numeric variables, while the last one is a factor variable with 3 levels.
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(tibble)
+install.packages("kableExtra", repo = "https://cran.r-project.org", quiet = TRUE)
+library(kableExtra)
 
 data(iris)
 iris <- as.tibble(iris)
 
-str(iris)
-sapply(iris, class)
-
+sapply(iris, class) %>%
+kable(align = 'c', col.names = c("Type")) %>% kable_styling(c("striped","bordered"), full_width = F, position = "center")
 
 ```
 
 __2.b__ Print out only species and its length of a sepal in ascending order. Print out same columns in using descending order of sepal length.
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE}
 # In ascending order
 iris %>%
   select(Species, Sepal.Length) %>%
-  arrange(Sepal.Length)
+  arrange(Sepal.Length) %>%
+  kable(align = 'c') %>% kable_styling(c("striped","bordered"), full_width = F, position = "center") %>% scroll_box(width = "100%", height = "200px")
 
 #In descending order
 iris %>%
   select(Species, Sepal.Length) %>%
-  arrange(desc(Sepal.Length))
+  arrange(desc(Sepal.Length))  %>%
+  kable(align = 'c') %>% kable_styling(c("striped","bordered"), full_width = F, position = "center") %>% scroll_box(width = "100%", height = "200px")
+
 
 ```
 
@@ -37,37 +41,41 @@ __2.c__ Create a new object `iris_species` and assign to it the `iris` tibble gr
 
 Each `Species` has 50 entries
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 
 iris_species <- group_by(iris, Species)
 iris_species %>% 
-  count(Species)
+  count(Species)  %>%
+  kable(align = 'c') %>% kable_styling(c("striped","bordered"), full_width = F, position = "center")
+
 ```
 
 __2.d__ Print out the average sepal's and petal's length and width for each species. What can be noticed?
 
 You can notice that the Virginica specie has the biggest Sepal's, Petal's lenght and Petal's Width on average. The Setosa has the biggest Sepal's Width on average, but at the same time has the smallest Petal's width on average.
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 
 iris_species %>%
-  summarise(AvgSepalLen = mean(Sepal.Length, na.rm = TRUE), AvgPetalLen = mean(Petal.Length, na.rm = TRUE), AvgSepalWid = mean(Sepal.Width, na.rm = TRUE), AvgPetalWid = mean(Petal.Width, na.rm = TRUE))
+  summarise(AvgSepalLen = mean(Sepal.Length, na.rm = TRUE), AvgPetalLen = mean(Petal.Length, na.rm = TRUE), AvgSepalWid = mean(Sepal.Width, na.rm = TRUE), AvgPetalWid = mean(Petal.Width, na.rm = TRUE))  %>%
+  kable(align = 'c') %>% kable_styling(c("striped","bordered"), full_width = F, position = "center")
 
 ```
 
 __2.e__ Modify `iris_species` by adding a new column of standardized petal's length (i.e., you need to subtract a mean value from each observation and divide by standard deviation). Print the maximum values of this new variable for each species.
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 
 iris_species %>% 
   mutate(standpetallen = (Petal.Length - mean(Petal.Length))/sd(Petal.Length)) %>%
-  summarise(maxstanpetlen = max(standpetallen))
+  summarise(Max_Petal_Length = max(standpetallen)) %>%
+  kable(align = 'c') %>% kable_styling(c("striped","bordered"), full_width = F, position = "center")
 
 ```
 
 __2.f__ Using the original `iris` tibble visualize the relation between petal's length and petal's width by plotting a scatter chart. Bonus: display a (linear) regression line without confidence intervals.
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE, fig.align='center'}
 
 iris %>%
   ggplot(mapping = aes(x=Petal.Length, y=Petal.Width))+
@@ -78,7 +86,7 @@ iris %>%
 
 __2.g__ Modify previous plot by using different colors for each species only for the scatter chart and not for the regression line.
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE, fig.align='center'}
 
 iris %>%
   ggplot(mapping = aes(x=Petal.Length, y=Petal.Width))+
